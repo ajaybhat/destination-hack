@@ -22,5 +22,6 @@ def newuser():
                        incoming_user['lname'], incoming_user['email'], incoming_user['gender'])
     return dumps(user)
 
+
 if __name__ == '__main__':
     app.run()

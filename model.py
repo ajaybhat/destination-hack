@@ -18,7 +18,7 @@ def execute_query(query):
 
 def create_user(uid, gid, fname, lname, email, gender):
     user = get_user(gid)
-    if user == None:
+    if user is None:
         query = "INSERT INTO users VALUES ({},{},{},{},{},{})".format(int(uid), gid, fname, lname, gender, email)
         results = execute_query(query)
         results.close()
@@ -26,15 +26,8 @@ def create_user(uid, gid, fname, lname, email, gender):
     return {"user": user, "exists": True}
 
 
-def get_user(uid):
-    results = execute_query("select * from users where uid={}".format(uid))
-    user = results._fetchone_impl()
-    results.close()
-    return user
-
-
 def get_all_users():
-    results = execute_query("select * from users")
+    results = execute_query("SELECT * FROM users")
     users = results._fetchall_impl()
     results.close()
     return users
@@ -54,3 +47,36 @@ def get_places_visited(uid):
     return places
 
 
+def get_user(uid):
+    results = execute_query("SELECT * FROM users WHERE uid={}".format(uid))
+    user = results._fetchone_impl()
+    results.close()
+    return user
+
+
+def get_review(place_id, uid):
+    results = execute_query("SELECT * FROM reviews WHERE place_id={} AND uid={}".format(place_id, uid))
+    review = results._fetchone_impl()
+    results.close()
+    return review
+
+
+def get_place(place_id):
+    results = execute_query("SELECT * FROM places WHERE place_id={}".format(place_id))
+    place = results._fetchone_impl()
+    results.close()
+    return place
+
+
+def create_review(rid, place_id, uid, rating, review, score, sentiment):
+    review = get_review(place_id, uid)
+    if review is None:
+        query = "INSERT INTO reviews VALUES ({},{},{},{},{})".format(rid, place_id, rating, review, score, sentiment)
+        results = execute_query(query)
+        results.close()
+        return get_review(place_id, uid)
+    return review
+
+
+def add_follower(uid1, uid2):
+    results = execute_query("INSERT INTO followers VALUES ({},{})".format(uid1, uid2))
