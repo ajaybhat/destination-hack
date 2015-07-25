@@ -1,7 +1,19 @@
 from flask import Flask, jsonify, request, g, render_template
 from sqlalchemy import create_engine
+from model import connect_db, create_user
+from json import JSONEncoder, JSONDecoder
+from uuid import uuid4
 
 app = Flask(__name__)
+
+@app.before_request
+def set_up_db():
+    g.db = connect_db()
+
+
+@app.teardown_request
+def close_db(e):
+    g.db.close()
 
 
 @app.route('/destihack/putuser', methods=['POST'])
@@ -9,18 +21,6 @@ def put():
     json_string = request.get_json(force=True)
     print json_string
     return ''
-
-
-@app.route('/destihack/getdb')
-def getsomedb():
-    return 'Done'
-
-
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
 
 
 @app.route('/destihack/showusers')
@@ -35,9 +35,11 @@ def show_entries():
     return x[0]
 
 
-@app.route('/destihack/newuser')
+@app.route('/destihack/newuser', methods=['POST'])
 def newuser():
-    user = {'name': 'Ajay', 'surname': 'Bhat', 'age': '22'}
+    incoming_user = request.get_json(force=True)
+    user = create_user(g.db, uuid4().int>>64, incoming_user['gid'], incoming_user['fname'], incoming_user['lname'],
+                       incoming_user['email'], incoming_user['gender'])
     return jsonify(user)
 
 
