@@ -16,10 +16,10 @@ def execute_query(query):
     return results
 
 
-def create_user(uid, gid, fname, lname, email, gender):
-    user = get_user(gid)
+def create_user(uid, gid, name, email):
+    user = get_user_with_gid(gid)
     if user is None:
-        query = "INSERT INTO users VALUES ({},{},{},{},{},{})".format(int(uid), gid, fname, lname, gender, email)
+        query = "INSERT INTO users VALUES ({},'{}','{}','{}')".format(int(uid), gid, name, email)
         results = execute_query(query)
         results.close()
         return {"user": get_user(uid), "exists": False}
@@ -45,6 +45,13 @@ def get_places_visited(uid):
     places = results._fetchall_impl()
     results.close()
     return places
+
+
+def get_user_with_gid(gid):
+    results = execute_query("SELECT * FROM users WHERE gid='{}'".format(gid))
+    user = results._fetchone_impl()
+    results.close()
+    return user
 
 
 def get_user(uid):
@@ -76,6 +83,37 @@ def create_review(rid, place_id, uid, rating, review, score, sentiment):
         results.close()
         return get_review(place_id, uid)
     return review
+
+
+def get_interest(uid, tag_id):
+    results = execute_query("SELECT * FROM interests WHERE uid={} AND tag_id={}".format(uid, tag_id))
+    review = results._fetchone_impl()
+    results.close()
+    return review
+
+def get_tag_id(tag):
+    results = execute_query("SELECT * FROM tags WHERE tag='{}'".format(tag))
+    tag = results._fetchone_impl()
+    results.close()
+    return tag[0]
+
+
+def create_interests(uid, tags):
+    interests = []
+    for tag in tags:
+        interests.append(get_tag_id(tag))
+    for interest in interests:
+        result = get_interest(uid, interest)
+        if result is None:
+            query = "INSERT INTO interests VALUES ({},{})".format(uid, interest)
+            results = execute_query(query)
+            results.close()
+
+def get_interests(uid):
+    results = execute_query("SELECT tag FROM tags where tag_id in (SELECT tag_id FROM interests WHERE uid={})".format(uid))
+    interests = results._fetchall_impl()
+    results.close()
+    return interests
 
 
 def add_follower(uid1, uid2):
