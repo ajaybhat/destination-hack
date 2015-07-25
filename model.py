@@ -76,15 +76,21 @@ def get_place(place_id):
     return place
 
 
-def create_review(rid, place_id, uid, rating, review, score, sentiment):
-    review_f = get_review(place_id, uid)
-    if review_f is None:
-        sentiment_score= sent_score(review)
-        query = "INSERT INTO reviews VALUES ({},{},{},{},{})".format(rid, place_id, rating, review_f, score, sentiment_score)
+def create_review(rid, place_id, uid, rating, review_text, score, sentiment):
+    review = get_review(place_id, uid)
+    if review is None:
+        sentiment_score = sent_score(review_text)
+        query = "INSERT INTO reviews VALUES ({},{},{},{},{},{})".format(rid, place_id, uid, rating, review_text, score,
+                                                                        sentiment_score)
         results = execute_query(query)
         results.close()
-        return get_review(place_id, uid)
-    return review
+    else:
+        sentiment_score = sent_score(review_text)
+        query = "UPDATE reviews SET rev".format(rid, place_id, uid, rating, review_text, score,
+                                                                        sentiment_score)
+        results = execute_query(query)
+        results.close()
+
 
 
 def get_interest(uid, tag_id):
@@ -92,6 +98,7 @@ def get_interest(uid, tag_id):
     review = results._fetchone_impl()
     results.close()
     return review
+
 
 def get_tag_id(tag):
     results = execute_query("SELECT * FROM tags WHERE tag='{}'".format(tag))
@@ -111,18 +118,28 @@ def create_interests(uid, tags):
             results = execute_query(query)
             results.close()
 
+
 def get_interests(uid):
-    results = execute_query("SELECT tag FROM tags where tag_id in (SELECT tag_id FROM interests WHERE uid={})".format(uid))
+    results = execute_query(
+        "SELECT tag FROM tags where tag_id in (SELECT tag_id FROM interests WHERE uid={})".format(uid))
     interests = results._fetchall_impl()
     results.close()
     return interests
 
 
-def add_follower(uid1, uid2):
-    results = execute_query("INSERT INTO followers VALUES ({},{})".format(uid1, uid2))
+def add_follower(uid, fid):
+    results = execute_query("INSERT INTO followers VALUES ({},{})".format(uid, fid))
+
 
 def get_follower(uid1):
     results = execute_query("SELECT * FROM followers WHERE uid={})".format(uid1))
-    follower=results._fetchall_impl()
+    follower = results._fetchall_impl()
     results.close()
-    return results
+    return follower
+
+
+def search_users(name):
+    results = execute_query("SELECT * FROM users WHERE name LIKE '%{}%' COLLATE NOCASE".format(name))
+    users = results._fetchall_impl()
+    results.close()
+    return users
