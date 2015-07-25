@@ -6,7 +6,16 @@ def connect_db():
 
 def create_user(db, uid, gid, fname, lname, email, gender):
     c = db.cursor()
-    query = """INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)"""
-    result = c.execute(query, (uid, gid, fname, lname, email, gender))
+    query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)"
+    c.execute(query, (uid, gid, fname, lname, email, gender))
     db.commit()
-    return result.lastrowid
+    return query_user(gid)
+
+
+
+def query_user(db, gid):
+    c = db.cursor()
+    query = "SELECT * FROM users where gid = (?)"
+    result = c.execute(query,(gid))
+    db.commit()
+    return result.fetchone()
