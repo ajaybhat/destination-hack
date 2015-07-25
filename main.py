@@ -2,6 +2,7 @@ from json import dumps
 from flask import Flask, request
 from uuid import uuid4
 from model import create_user, get_all_users, get_user, create_interests, get_interests
+from model import create_user, get_all_users, get_user,get_follower
 
 app = Flask(__name__)
 
@@ -32,6 +33,17 @@ def newuser():
     user = create_user(int(uuid4().int >> 70), incoming_user['gid'], incoming_user['name'], incoming_user['email'])
     return dumps(user)
 
+@app.route('/destihack/get_review')
+def get_r():
+    incoming_user = request.get_json(force=True)
+    review= get_review(incoming_user['place_id'], incoming_user['uid'])
+    return dumps(review)
+
+@app.route('/destihack/get_follower')
+def get_f():
+    incoming_user = request.get_json(force=True)
+    follower = get_follower(incoming_user['uid'])
+    return dumps(follower)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
