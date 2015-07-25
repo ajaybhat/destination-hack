@@ -2,6 +2,7 @@ from sqlite3 import connect
 import datetime
 from sqlalchemy import create_engine
 from json import dumps
+from senti import sent_score
 
 
 def connect_db():
@@ -69,9 +70,10 @@ def get_place(place_id):
 
 
 def create_review(rid, place_id, uid, rating, review, score, sentiment):
-    review = get_review(place_id, uid)
-    if review is None:
-        query = "INSERT INTO reviews VALUES ({},{},{},{},{})".format(rid, place_id, rating, review, score, sentiment)
+    review_f = get_review(place_id, uid)
+    if review_f is None:
+        sentiment_score= sent_score(review)
+        query = "INSERT INTO reviews VALUES ({},{},{},{},{})".format(rid, place_id, rating, review_f, score, sentiment_score)
         results = execute_query(query)
         results.close()
         return get_review(place_id, uid)
@@ -80,3 +82,9 @@ def create_review(rid, place_id, uid, rating, review, score, sentiment):
 
 def add_follower(uid1, uid2):
     results = execute_query("INSERT INTO followers VALUES ({},{})".format(uid1, uid2))
+
+def get_follower(uid1):
+    results = execute_query("SELECT * FROM followers WHERE uid={})".format(uid1))
+    follower=results._fetchall_impl()
+    results.close()
+    return results
