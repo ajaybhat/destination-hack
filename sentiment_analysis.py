@@ -12,10 +12,6 @@ def sentence_score(review):
     verb = {'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ'}
     adverb = {'RB', 'RBR', 'RBS'}
     adj = {'JJ', 'JJR', 'JJS'}
-    vlist = []
-    avlist = []
-    adjlist = []
-    ls = []
     sentence = review
     dic = {'stinks': -0.5, 'worst': -0.7, 'hate': -0.5, 'horrible': -0.4, 'amazing': 0.4, 'great': 0.4, 'nice': 0.5,
            'Wonderful': 0.5, 'serious': 0, 'uninspired': -0.3, 'good': 0.4, 'love': 0.9, 'awesome': 0.75,
@@ -24,16 +20,13 @@ def sentence_score(review):
     letters_only = re.sub("[^a-zA-Z.]", " ", sentence)
     words = letters_only.split()
     stops = set(stopwords.words("english")) - {"very", "against", "but", "not", "down"}
-    meaningful_words = [w for w in words if not w in stops]
     # print meaningful_words
     pos_words = nltk.pos_tag(words)
     pos_words = [w for w in pos_words if not w in stops]
     # print pos_words
-    s = 0
     sen_score1 = 0
     sen_score = 0
     cnt = 1
-    cal_score = 0
     # print(len(words))
     for i in range(0, len(pos_words)):
         # print i
@@ -67,7 +60,6 @@ def sentence_score(review):
 
             sen_score1 = -sen_score1
             sen_score += sen_score1
-            i = i + 1
         elif pos_words[i][0] in dic:
             sen_score += dic[pos_words[i][0]]
             cnt = cnt + 1
