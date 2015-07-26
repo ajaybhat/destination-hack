@@ -140,11 +140,19 @@ def get_follower(uid, fid):
     return follower
 
 
+def get_is_following(uid, fid):
+    results = execute_query("SELECT * FROM followers WHERE fid={} AND uid={}".format(uid, fid))
+    follower = results._fetchone_impl()
+    results.close()
+    return follower
+
+
 def get_followers(uid):
     results = execute_query("SELECT * FROM users WHERE uid in (SELECT fid from followers WHERE uid={})".format(uid))
     followers = results._fetchall_impl()
     results.close()
     return followers
+
 
 def get_following(fid):
     results = execute_query("SELECT * FROM users WHERE uid in (SELECT uid from followers WHERE fid={})".format(fid))
@@ -152,8 +160,19 @@ def get_following(fid):
     results.close()
     return following
 
-def search_users(name):
+
+def search_users(name, uid):
     results = execute_query("SELECT * FROM users WHERE name LIKE '%{}%' COLLATE NOCASE".format(name))
     users = results._fetchall_impl()
     results.close()
-    return users
+    formatted = []
+    for user in users:
+        fid = int(user[0])
+        following, follows = False, False
+        if uid != fid:
+            if get_follower(uid, fid):
+                follows = True
+            if get_is_following(uid, fid):
+                following = True
+            formatted.append({"user": user, "follows": follows, "following": following})
+    return formatted

@@ -58,7 +58,7 @@ def getinterests():
 
 @app.route('/destihack/search_users')
 def searchusers():
-    return dumps({"search_results": search_users(request.args['name'])})
+    return dumps({"search_results": search_users(request.args['name'],int(request.args['uid']))})
 
 
 @app.route('/destihack/login', methods=['POST'])
