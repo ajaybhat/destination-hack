@@ -25,33 +25,33 @@ def sentence_score(review):
     words = letters_only.split()
     stops = set(stopwords.words("english")) - {"very", "against", "but", "not", "down"}
     meaningful_words = [w for w in words if not w in stops]
-    print meaningful_words
+    # print meaningful_words
     pos_words = nltk.pos_tag(words)
     pos_words = [w for w in pos_words if not w in stops]
-    print pos_words
+    # print pos_words
     s = 0
     sen_score1 = 0
     sen_score = 0
     cnt = 1
     cal_score = 0
-    print(len(words))
+    # print(len(words))
     for i in range(0, len(pos_words)):
-        print i
-        print(pos_words[i])
+        # print i
+        # print(pos_words[i])
         if pos_words[i][0] == 'n\'t':
             if pos_words[i][1] in verb:
                 st1 = list(swn.senti_synsets(pos_words[i + 1][0], 'v'))
                 if len(st1) != 0:
-                    print(st1[0].pos_score())
-                    print(st1[0].neg_score())
+                    # print(st1[0].pos_score())
+                    # print(st1[0].neg_score())
                     if (st1[0].pos_score() != 0 or st1[0].neg_score() != 0):
                         cnt = cnt + 1
                     sen_score1 = st1[0].pos_score() - st1[0].neg_score()
             elif pos_words[i][1] in adverb:
                 st2 = list(swn.senti_synsets(pos_words[i + 1][0], 'r'))
                 if len(st2) != 0:
-                    print(st2[0].pos_score())
-                    print(st2[0].neg_score())
+                    # print(st2[0].pos_score())
+                    # print(st2[0].neg_score())
                     if (st2[0].pos_score() != 0 or st2[0].neg_score() != 0):
                         cnt = cnt + 1
                     sen_score1 = st2[0].pos_score() - st2[0].neg_score()
@@ -59,8 +59,8 @@ def sentence_score(review):
             elif pos_words[i + 1][1] in adj:
                 st3 = list(swn.senti_synsets(pos_words[i][0], 'a'))
                 if len(st3) != 0:
-                    print(st3[0].pos_score())
-                    print(st3[0].neg_score())
+                    # print(st3[0].pos_score())
+                    # print(st3[0].neg_score())
                     if (st3[0].pos_score() != 0 or st3[0].neg_score() != 0):
                         cnt = cnt + 1
                     sen_score1 = st3[0].pos_score() - st3[0].neg_score()
@@ -74,8 +74,8 @@ def sentence_score(review):
         elif pos_words[i][1] in verb:
             st1 = list(swn.senti_synsets(pos_words[i][0], 'v'))
             if len(st1) != 0:
-                print(st1[0].pos_score())
-                print(st1[0].neg_score())
+                # print(st1[0].pos_score())
+                # print(st1[0].neg_score())
                 if (st1[0].pos_score() != 0 or st1[0].neg_score() != 0):
                     cnt = cnt + 1
                 sen_score += st1[0].pos_score() - st1[0].neg_score()
@@ -83,8 +83,8 @@ def sentence_score(review):
         elif pos_words[i][1] in adverb:
             st2 = list(swn.senti_synsets(pos_words[i][0], 'r'))
             if len(st2) != 0:
-                print(st2[0].pos_score())
-                print(st2[0].neg_score())
+                # print(st2[0].pos_score())
+                # print(st2[0].neg_score())
                 if (st2[0].pos_score() != 0 or st2[0].neg_score() != 0):
                     cnt = cnt + 1
                 sen_score += st2[0].pos_score() - st2[0].neg_score()
@@ -92,8 +92,8 @@ def sentence_score(review):
         elif pos_words[i][1] in adj:
             st3 = list(swn.senti_synsets(pos_words[i][0], 'a'))
             if len(st3) != 0:
-                print(st3[0].pos_score())
-                print(st3[0].neg_score())
+                # print(st3[0].pos_score())
+                # print(st3[0].neg_score())
                 if (st3[0].pos_score() != 0 or st3[0].neg_score() != 0):
                     cnt = cnt + 1
                 sen_score += st3[0].pos_score() - st3[0].neg_score()
@@ -109,7 +109,7 @@ def sentence_score(review):
             sen_score += dic[pos_words[i][0]]
             cnt = cnt + 1
 
-        print 'score is:', sen_score
+        # print 'score is:', sen_score
     if sen_score > 1 or sen_score < -1:
         calscore = sen_score / cnt
     else:

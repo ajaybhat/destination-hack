@@ -85,7 +85,7 @@ def create_review(rid, place_id, uid, rating, review_text, score, sentiment_scor
         results = execute_query(query)
         results.close()
     else:
-        query = "UPDATE reviews SET  rating = {},review_text = '{}',score = {},sentiment={} WHERE uid = {} AND place_id = {} ,".format(
+        query = "UPDATE reviews SET  rating = {},review_text = '{}',score = {},sentiment={} WHERE uid = {} AND place_id = {} ".format(
             rating, review_text, score, sentiment_score, uid, place_id)
     results = execute_query(query)
     results.close()
@@ -177,8 +177,12 @@ def search_users(name, uid):
             formatted.append({"user": user, "follows": follows, "following": following})
     return formatted
 
-def get_follower_reviews(uid):
-    results = execute_query("SELECT * FROM review WHERE uid in (SELECT * FROM followers WHERE uid={} ").format(uid)
-    following_reviews= results._fetchall_impl()
+
+def get_following_reviews(uid):
+    results = execute_query("SELECT * FROM reviews WHERE uid in (SELECT fid FROM followers WHERE uid={}) ".format(uid))
+    following_reviews = results._fetchall_impl()
     results.close()
-    return following_reviews
+    final = []
+    for review in following_reviews:
+        final.append([get_place(review[1])[1], get_user(review[2]), review[3], review[4], review[5], review[6]])
+    return final[:5]
