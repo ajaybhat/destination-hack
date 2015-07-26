@@ -126,15 +126,31 @@ def get_interests(uid):
 
 
 def add_follower(uid, fid):
-    results = execute_query("INSERT INTO followers VALUES ({},{})".format(uid, fid))
+    follower = get_follower(uid, fid)
+    if follower is None:
+        execute_query("INSERT INTO followers VALUES ({},{})".format(uid, fid))
+        return True
+    return False
 
 
-def get_follower(uid1):
-    results = execute_query("SELECT * FROM followers WHERE uid={})".format(uid1))
-    follower = results._fetchall_impl()
+def get_follower(uid, fid):
+    results = execute_query("SELECT * FROM followers WHERE uid={} AND fid={}".format(uid, fid))
+    follower = results._fetchone_impl()
     results.close()
     return follower
 
+
+def get_followers(uid):
+    results = execute_query("SELECT * FROM users WHERE uid in (SELECT fid from followers WHERE uid={})".format(uid))
+    followers = results._fetchall_impl()
+    results.close()
+    return followers
+
+def get_following(fid):
+    results = execute_query("SELECT * FROM users WHERE uid in (SELECT uid from followers WHERE fid={})".format(fid))
+    following = results._fetchall_impl()
+    results.close()
+    return following
 
 def search_users(name):
     results = execute_query("SELECT * FROM users WHERE name LIKE '%{}%' COLLATE NOCASE".format(name))

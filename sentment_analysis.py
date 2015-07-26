@@ -104,5 +104,3 @@ def sentence_score(review):
         calscore = sen_score
     print calscore
     return calscore
-
-print sentence_score("Bangalore palace is a beautiful place. I have not seen a place like it in my entire life. It is very powerful and robust. I do not recommend anyone to see this place in future.")
