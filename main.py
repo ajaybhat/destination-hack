@@ -1,7 +1,8 @@
 from json import dumps
 from flask import Flask, request
 from uuid import uuid4
-from model import create_user, get_all_users, get_user, get_review, create_interests, get_interests, get_follower,search_users
+from sentment_analysis import sentence_score
+from model import create_user, get_all_users, get_user, get_review, create_interests, get_interests, get_follower,search_users, create_review
 
 app = Flask(__name__)
 
@@ -15,6 +16,13 @@ def getusers():
 def getuser():
     return dumps({"user": get_user(request.args['uid'])})
 
+@app.route('/destihack/review', methods=['POST'])
+def review():
+    incoming_review = request.get_json(force=True)
+    review_text = incoming_review['review_text']
+    sentiment_score = sentence_score(review_text)
+    create_review(get_uuid(),incoming_review['place_id'],incoming_review['uid'],incoming_review['rating'],incoming_review['review_text'], 0 if sentiment_score<4 else 1, sentiment_score)
+    return ''
 
 @app.route('/destihack/interests', methods=['POST'])
 def interests():
@@ -34,9 +42,8 @@ def searchusers():
 @app.route('/destihack/login', methods=['POST'])
 def newuser():
     incoming_user = request.get_json(force=True)
-    user = create_user(int(uuid4().int >> 70), incoming_user['gid'], incoming_user['name'], incoming_user['email'])
+    user = create_user(get_uuid(), incoming_user['gid'], incoming_user['name'], incoming_user['email'])
     return dumps(user)
-
 
 @app.route('/destihack/get_review')
 def get_r():
@@ -51,7 +58,8 @@ def get_f():
     follower = get_follower(incoming_user['uid'])
     return dumps(follower)
 
-
+def get_uuid():
+    return int(uuid4().int >> 70)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

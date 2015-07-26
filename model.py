@@ -1,8 +1,8 @@
 from sqlite3 import connect
-import datetime
+
 from sqlalchemy import create_engine
-from json import dumps
-from senti import sent_score
+
+from sentment_analysis import sentence_score
 
 
 def connect_db():
@@ -76,21 +76,19 @@ def get_place(place_id):
     return place
 
 
-def create_review(rid, place_id, uid, rating, review_text, score, sentiment):
+def create_review(rid, place_id, uid, rating, review_text, score, sentiment_score):
     review = get_review(place_id, uid)
     if review is None:
-        sentiment_score = sent_score(review_text)
-        query = "INSERT INTO reviews VALUES ({},{},{},{},{},{})".format(rid, place_id, uid, rating, review_text, score,
-                                                                        sentiment_score)
+        query = "INSERT INTO reviews VALUES ({},{},{},'{}',{},{})".format(rid, place_id, uid, rating, review_text,
+                                                                          score,
+                                                                          sentiment_score)
         results = execute_query(query)
         results.close()
     else:
-        sentiment_score = sent_score(review_text)
-        query = "UPDATE reviews SET rev".format(rid, place_id, uid, rating, review_text, score,
-                                                                        sentiment_score)
-        results = execute_query(query)
-        results.close()
-
+        query = "UPDATE reviews SET  rating = {},review_text = '{}',score = {},sentiment={} WHERE uid = {} AND place_id = {} ,".format(
+            rating, review_text, score, sentiment_score, uid, place_id)
+    results = execute_query(query)
+    results.close()
 
 
 def get_interest(uid, tag_id):
