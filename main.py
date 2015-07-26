@@ -1,7 +1,7 @@
 from json import dumps
 from flask import Flask, request
 from uuid import uuid4
-from sentment_analysis import sentence_score
+from sentiment_analysis import sentence_score
 from model import create_user, get_all_users, get_user, get_review, create_interests, get_interests, get_follower, \
     search_users, search_places, create_review, add_follower, get_followers, get_following, get_following_reviews, \
     get_place
