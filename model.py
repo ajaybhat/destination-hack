@@ -1,11 +1,4 @@
-from sqlite3 import connect
-
 from sqlalchemy import create_engine
-
-
-def connect_db():
-    return connect("destination.db")
-
 
 def execute_query(query):
     engine = create_engine('sqlite:///destination.db')
