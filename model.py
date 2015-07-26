@@ -80,3 +80,9 @@ def create_review(rid, place_id, uid, rating, review, score, sentiment):
 
 def add_follower(uid1, uid2):
     results = execute_query("INSERT INTO followers VALUES ({},{})".format(uid1, uid2))
+
+def get_follower(uid1):
+    results = execute_query("SELECT * FROM followers WHERE uid={})".format(uid1))
+    follower=results._fetchall_impl()
+    results.close()
+    return results
