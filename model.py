@@ -176,3 +176,9 @@ def search_users(name, uid):
                 following = True
             formatted.append({"user": user, "follows": follows, "following": following})
     return formatted
+
+def get_follower_reviews(uid):
+    results = execute_query("SELECT * FROM review WHERE uid in (SELECT * FROM followers WHERE uid={} ").format(uid)
+    following_reviews= results._fetchall_impl()
+    results.close()
+    return following_reviews

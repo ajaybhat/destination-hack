@@ -3,7 +3,7 @@ from flask import Flask, request
 from uuid import uuid4
 from sentment_analysis import sentence_score
 from model import create_user, get_all_users, get_user, get_review, create_interests, get_interests, get_follower, \
-    search_users, create_review, add_follower, get_followers, get_following
+    search_users, create_review, add_follower, get_followers, get_following,get_follower_reviews
 
 app = Flask(__name__)
 
@@ -77,6 +77,13 @@ def get_r():
 
 def get_uuid():
     return int(uuid4().int >> 70)
+
+@app.route('/destihack/get_follower_reviews')
+def get_f_r():
+    incoming_user = request.get_json(force=True)
+    review = get_follower_reviews(incoming_user['uid'])
+    return dumps(review)
+
 
 
 if __name__ == '__main__':

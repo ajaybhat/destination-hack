@@ -117,4 +117,4 @@ def sentence_score(review):
     return calscore
 
 
-sent_score('i love this place :)')
+sentence_score('i love this place :)')
