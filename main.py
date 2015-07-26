@@ -3,7 +3,8 @@ from flask import Flask, request
 from uuid import uuid4
 from sentment_analysis import sentence_score
 from model import create_user, get_all_users, get_user, get_review, create_interests, get_interests, get_follower, \
-    search_users, create_review, add_follower, get_followers, get_following, get_following_reviews
+    search_users, search_places, create_review, add_follower, get_followers, get_following, get_following_reviews, \
+    get_place
 
 app = Flask(__name__)
 
@@ -78,6 +79,18 @@ def get_r():
 @app.route('/destihack/get_following_reviews')
 def getfollowingreviews():
     return dumps({"reviews": get_following_reviews(request.args['uid'])})
+
+
+@app.route('/destihack/search_places')
+def searchplaces():
+    return dumps({"search results": search_places(request.args['name'])})
+
+
+@app.route('/destihack/get_place')
+def getplace():
+    place = get_place(int(request.args['place_id']))
+    final = [place[0], place[1], place[2]]
+    return dumps("place", final)
 
 
 def get_uuid():

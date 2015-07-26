@@ -2,8 +2,6 @@ from sqlite3 import connect
 
 from sqlalchemy import create_engine
 
-from sentment_analysis import sentence_score
-
 
 def connect_db():
     return connect("destination.db")
@@ -177,6 +175,14 @@ def search_users(name, uid):
             formatted.append({"user": user, "follows": follows, "following": following})
     return formatted
 
+def search_places(name):
+    results = execute_query("SELECT * FROM places WHERE name LIKE '%{}%' COLLATE NOCASE".format(name))
+    places = results._fetchall_impl()
+    results.close()
+    final = []
+    for place in places:
+        final.append([place[0], place[1], place[2]])
+    return final
 
 def get_following_reviews(uid):
     results = execute_query("SELECT * FROM reviews WHERE uid in (SELECT fid FROM followers WHERE uid={}) ".format(uid))
