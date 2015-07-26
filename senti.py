@@ -5,6 +5,7 @@ import re
 from nltk.corpus import stopwords
 import nltk
 import nltk.tokenize
+
 def sent_score(review):
         verb ={ 'VB','VBD','VBG','VBN','VBP','VBZ'}
         adverb={'RB','RBR','RBS'}
@@ -14,7 +15,7 @@ def sent_score(review):
         adjlist=[]
         ls=[]
         sentence=review
-        #dic={'serious':0,'uninspired':-0.3,'good':0.4,'love':0.9,'awesome':0.75,'amuses':0.125,'challenging':0.65,'introspective':0.75,'independent':0.375,'quiet':0.125,'positively':0.85,'mess':-0.375,'plodding':-0.375,'trouble':-0.375}
+        dic={'hate':-0.5,'horrible':-0.4,'amazing':0.4, 'great':0.4,'nice':0.5,'Wonderful':0.5,'serious':0,'uninspired':-0.3,'good':0.4,'love':0.9,'awesome':0.75,'amuses':0.125,'challenging':0.65,'introspective':0.75,'independent':0.375,'quiet':0.125,'positively':0.85,'mess':-0.375,'plodding':-0.375,'trouble':-0.375}
         letters_only = re.sub("[^a-zA-Z.]"," ",sentence)
         words=letters_only.split()
         stops = set(stopwords.words("english"))-{"very","against","but","not","down"}
@@ -61,9 +62,9 @@ def sent_score(review):
                                 sen_score1=-sen_score1
                                 sen_score+=sen_score1
                                 i=i+1
-                    # elif pos_words[i][0] in  dic:
-                    #                   sen_score+=dic[pos_words[i][0]]
-                    #                   cnt=cnt+1
+                    elif pos_words[i][0] in  dic:
+                                      sen_score+=dic[pos_words[i][0]]
+                                      cnt=cnt+1
                     elif pos_words[i][1] in verb:
                             st1=list(swn.senti_synsets(pos_words[i][0],'v'))
                             if  len(st1)!=0:
@@ -98,9 +99,9 @@ def sent_score(review):
                     elif pos_words[i][0]=='challenging':
                                       sen_score+=0.65
                                       cnt=cnt+1
-                    # elif pos_words[i][0] in  dic:
-                    #                   sen_score+=dic[pos_words[i][0]]
-                    #                   cnt=cnt+1
+                    elif pos_words[i][0] in  dic:
+                                      sen_score+=dic[pos_words[i][0]]
+                                      cnt=cnt+1
 
                     print 'score is:',sen_score
         if sen_score>1:
@@ -110,4 +111,4 @@ def sent_score(review):
         print calscore
         return calscore
 
-
+sent_score('The food here is always very good. The service is impeccable. Try their signature dish the Camenbert it is wonderful. Good vines and also a good variety of non alcoholic drinks.')
