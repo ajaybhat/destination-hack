@@ -15,13 +15,14 @@ def sent_score(review):
         adjlist=[]
         ls=[]
         sentence=review
-        dic={'hate':-0.5,'horrible':-0.4,'amazing':0.4, 'great':0.4,'nice':0.5,'Wonderful':0.5,'serious':0,'uninspired':-0.3,'good':0.4,'love':0.9,'awesome':0.75,'amuses':0.125,'challenging':0.65,'introspective':0.75,'independent':0.375,'quiet':0.125,'positively':0.85,'mess':-0.375,'plodding':-0.375,'trouble':-0.375}
+        dic={'stinks':-0.5,'worst':-0.7,'hate':-0.5,'horrible':-0.4,'amazing':0.4, 'great':0.4,'nice':0.5,'Wonderful':0.5,'serious':0,'uninspired':-0.3,'good':0.4,'love':0.9,'awesome':0.75,'amuses':0.125,'challenging':0.65,'introspective':0.75,'independent':0.375,'quiet':0.125,'positively':0.85,'mess':-0.375,'plodding':-0.375,'trouble':-0.375}
         letters_only = re.sub("[^a-zA-Z.]"," ",sentence)
         words=letters_only.split()
         stops = set(stopwords.words("english"))-{"very","against","but","not","down"}
         meaningful_words = [w for w in words if not w in stops]
         print meaningful_words
-        pos_words=nltk.pos_tag(meaningful_words)
+        pos_words=nltk.pos_tag(words)
+        pos_words= [w for w in pos_words if not w in stops]
         print pos_words
         s=0
         sen_score1=0
@@ -104,11 +105,11 @@ def sent_score(review):
                                       cnt=cnt+1
 
                     print 'score is:',sen_score
-        if sen_score>1:
+        if sen_score>1 or sen_score<-1:
                 calscore=sen_score/cnt
         else:
                calscore=sen_score
         print calscore
         return calscore
 
-sent_score('The food here is always very good. The service is impeccable. Try their signature dish the Camenbert it is wonderful. Good vines and also a good variety of non alcoholic drinks.')
+sent_score('i love this place :)')
