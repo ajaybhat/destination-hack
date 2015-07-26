@@ -4,7 +4,7 @@ from uuid import uuid4
 from sentiment_analysis import sentence_score
 from model import create_user, get_all_users, get_user, get_review, create_interests, get_interests, get_follower, \
     search_users, search_places, create_review, add_follower, get_followers, get_following, get_following_reviews, \
-    get_place
+    get_place,get_recommended_reviews
 
 app = Flask(__name__)
 
@@ -91,6 +91,10 @@ def getplace():
     place = get_place(int(request.args['place_id']))
     final = [place[0], place[1], place[2]]
     return dumps("place", final)
+
+@app.route('/destihack/get_recommended_reviews')
+def getrecommendedreviews():
+    return dumps({"recommended":get_recommended_reviews()})
 
 
 def get_uuid():

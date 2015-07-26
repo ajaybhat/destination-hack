@@ -144,6 +144,15 @@ def get_is_following(uid, fid):
     results.close()
     return follower
 
+def get_recommended_reviews():
+    results = execute_query("SELECT * FROM reviews order by sentiment DESC ")
+    reviews = results._fetchall_impl()
+    results.close()
+    final = []
+    for review in reviews:
+        final.append([get_place(review[1])[1], review[3], review[4], review[5], review[6]])
+    return final[:3]
+
 
 def get_followers(uid):
     results = execute_query("SELECT * FROM users WHERE uid in (SELECT fid from followers WHERE uid={})".format(uid))
