@@ -1,7 +1,8 @@
 # __author__ = 'ram'
 
-from nltk.corpus import sentiwordnet as swn
 import re
+
+from nltk.corpus import sentiwordnet as swn
 from nltk.corpus import stopwords
 import nltk
 import nltk.tokenize
@@ -115,6 +116,3 @@ def sentence_score(review):
         calscore = sen_score
     print calscore
     return calscore
-
-
-sentence_score('i love this place :)')
