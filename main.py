@@ -72,8 +72,7 @@ def newuser():
 @app.route('/destihack/get_review')
 def get_r():
     incoming_user = request.get_json(force=True)
-    review = get_review(incoming_user['place_id'], incoming_user['uid'])
-    return dumps(review)
+    return dumps(get_review(incoming_user['place_id'], incoming_user['uid']))
 
 
 @app.route('/destihack/get_following_reviews')
